@@ -79,12 +79,17 @@ class Endpoint:
         """Add an identity key to this endpoint."""
         self.identity_keys.append(identity_key)
 
-    def app(self):
+    def app(self, lifespan=None):
         """
         Returns the ASGI application for this endpoint.
 
         This method is responsible for creating and returning the ASGI application
         that will handle incoming requests for this endpoint.
+
+        Args:
+            lifespan: An optional async context manager that is called during the
+                      application lifespan (startup/shutdown). Use this to add custom
+                      startup and shutdown logic.
 
         Returns:
             The ASGI application for this endpoint.
@@ -94,13 +99,14 @@ class Endpoint:
         # pylint: disable=R0401
         from restate.server import asgi_app
 
-        return asgi_app(self)
+        return asgi_app(self, lifespan=lifespan)
 
 
 def app(
     services: typing.Iterable[typing.Union[Service, VirtualObject, Workflow]],
     protocol: typing.Optional[typing.Literal["bidi", "request_response"]] = None,
     identity_keys: typing.Optional[typing.List[str]] = None,
+    lifespan: typing.Optional[typing.Callable] = None,
 ):
     """A restate ASGI application that hosts the given services."""
     endpoint = Endpoint()
@@ -113,4 +119,4 @@ def app(
     if identity_keys:
         for key in identity_keys:
             endpoint.identity_key(key)
-    return endpoint.app()
+    return endpoint.app(lifespan=lifespan)
