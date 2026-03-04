@@ -52,27 +52,14 @@ We know that your time is precious and, therefore, deeply value any effort to co
 ### Local development
 
 * Python 3
-* PyEnv or VirtualEnv
+* [uv](https://docs.astral.sh/uv/)
 * [just](https://github.com/casey/just)
 * [Rust toolchain](https://rustup.rs/)
 
-Set up your virtual environment using the tool of your choice, e.g. VirtualEnv:
+Build and install:
 
 ```shell
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-Install the build tools:
-
-```shell
-pip install -r requirements.txt
-```
-
-Now build the Rust module and include opt-in additional dev dependencies:
-
-```shell
-maturin dev -E test,lint
+just sync
 ```
 
 You usually need to build the Rust module only once, but you might need to rebuild it on pulls.
